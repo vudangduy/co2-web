@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!--Phần head-->
+  <head>
+    <title>Giao diện quản lý</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <!--Phần body-->
+  <body>
+    <h1>WEB APP GIÁM SÁT THIẾT BỊ ĐO NỒNG ĐỘ CO2</h1>
+
+    <!--Chức năng hiển thị biểu đồ-->
+    <div>
+      <h3>1.Hiển thị biểu đồ nồng độ CO2</h3>
+
+      <label>Nhập tên thiết bị:</label>
+      <input id="deviceIdInput" type="text" placeholder="Ví dụ: esp8266-01">
+
+      <label for="StartDateInput">Ngày bắt đầu:</label>
+      <input id="StartDateInput" type="date">
+
+      <label for="EndDateInput">Ngày kết thúc:</label>
+      <input id="EndDateInput" type="date">
+
+      <button id="btnShowChart" title="Nhấn để xem biểu đồ" onclick="showChart()">Hiển thị biểu đồ</button>
+      <label><input type="checkbox" id="autoUpdateCheckbox" title="Chọn để tự động cập nhật sau 1 phút">Tự động cập nhật biểu đồ</label>
+      <canvas id="CO2Chart" width="1000" height="500"></canvas>
+    </div>
+
+    <!--Chức năng cập nhật firmware-->
+    <div>
+      <h3>2.Cập nhật phần mềm</h3>
+      <label>Nhập tên thiết bị:</label>
+      <input id="deviceIdInputForUpdate" type="text" placeholder="Ví dụ: esp8266-01">
+      <label>Lựa chọn phiên bản:</label>
+      <select id="firmwareSelect">
+        <option value="v4.0.bin">Version 4.0</option>
+        <option value="latest.bin">Latest Version</option>
+      </select>
+      <button id="btnUpdateFirmware" title="Nhấn để cập nhật phần mềm" onclick="updateFirmware()">Cập nhật</button>
+      <p id="updateStatus">Trạng thái cập nhật</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
