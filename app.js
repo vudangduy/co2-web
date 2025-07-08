@@ -165,6 +165,71 @@ async function updateFirmware(){
   }
 }
 
+//Hàm tải file lên S3
+async function uploadFirmware() {
+  const fileInput = document.getElementById("firmwareUploadInput");
+  const statusUpload = document.getElementById("uploadStatus")
+  //Check người dùng đã nhập file chưa
+  if (!fileInput.files || fileInput.files.length === 0) {
+    statusUpload.textContent = "❌ Lỗi: Vui lòng chọn file trước";
+    statusUpload.style.color = "red";
+    return;
+  }
+  //Néu đã nhập file
+  const file = fileInput.files[0];
+  const filename = file.name;
+
+  try {
+    statusUpload.textContent = "⏳ Đang tạo URL tải lên...";
+    statusUpload.style.color = "green";
+    //1-Gửi yêu cầu qua API lấy link Upload
+    const response = await fetch("https://eododavux4.execute-api.us-east-1.amazonaws.com/UpFirmToS3Function",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ filename })
+      }
+    );
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data?.error || `Lỗi: ${response.status}`);
+    }
+
+    const uploadUrl = data.uploadUrl;
+
+    statusUpload.textContent = "⬆️ Hoàn tất tạo URL ,đang tải file lên S3...";
+    statusUpload.style.color = "blue";
+
+    //2-Gửi put tới S3 bằng presigned url
+    const putRes = await fetch(uploadUrl,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/octet-stream"
+        },
+        body: file
+      }
+    );
+
+    if(!putRes.ok){
+      statusUpload.textContent = "❌ Lỗi: Tải lên thất bại!";
+      statusUpload.style.color = "red";
+    } else {
+      statusUpload.textContent = `✅ Tải lên thành công: ${filename}`;
+      statusUpload.style.color = "green";
+    }
+  }
+  catch (err) {
+    console.error(err);
+    statusUpload.textContent = `❌ Lỗi: ${err.message}`;
+    statusUpload.style.color = "red";
+  }
+}
+
+
 //Tự động cập nhật các file trên S3
 const firmwareSelect = document.getElementById("firmwareSelect");
 

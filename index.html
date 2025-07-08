@@ -38,7 +38,16 @@
       <select id="firmwareSelect">
       </select>
       <button id="btnUpdateFirmware" title="Nhấn để cập nhật phần mềm" onclick="updateFirmware()">Cập nhật</button>
-      <p id="updateStatus">Trạng thái cập nhật</p>
+      <p id="updateStatus"></p>
+    </div>
+
+    <!--Chức năng upload firmware lên server-->
+    <div>
+      <h3>3.Tải lên phần mềm mới</h3>
+      <label>Chọn file (.bin):</label>
+      <input id="firmwareUploadInput" type="file" accept=".bin">
+      <button onclick="uploadFirmware()">Tải lên</button>
+      <p id="uploadStatus"></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
