@@ -75,9 +75,12 @@ function drawChart(labels,values){
         label: 'Nồng độ CO2 (ppm)',
         data: values,
         borderColor: 'green',
+        borderWidth: 1,
         backgroundColor: 'rgba(0,128,0,0.1)',
         tension: 0.4,
-        fill: true
+        fill: true,
+        pointRadius: 0,
+        pointHoverRadius: 4
       }]
     },
     options: {
