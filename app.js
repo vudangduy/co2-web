@@ -151,12 +151,12 @@ async function updateFirmware(){
     const data = await response.json();
 
     if(response.ok){
-      statusElement.textContent = `✅ Đã gửi URL cập nhật tới thiết bị "${deviceId}".`;
+      statusElement.textContent = `✅ Đã gửi yêu cầu cập nhật "${deviceId}".`;
       statusElement.style.color = "green";
     }
   }
   catch (error){
-    statusElement.textContent = `❌ Lỗi: ${error.message},vui lòng thử lại sau!`;
+    statusElement.textContent = `❌ Xuất hiện lỗi: ${error.message}`;
     statusElement.style.color = "red";
   }
   finally {
@@ -164,3 +164,41 @@ async function updateFirmware(){
     btn.textContent = "Cập nhật";
   }
 }
+
+//Tự động cập nhật các file trên S3
+const firmwareSelect = document.getElementById("firmwareSelect");
+
+const GetS3Files_API = "https://irxytmyomi.execute-api.us-east-1.amazonaws.com/GetS3FilesFunction";
+
+async function loadFirmwareOptions() {
+  try {
+    const response = await fetch(GetS3Files_API);
+    const files = await response.json();
+
+    //xoá các option cũ
+    firmwareSelect.innerHTML = "";
+
+    files.forEach(files => {
+      // Kiểm tra các key có .bin là firmware có thể update
+      if (files.Key.endsWith(".bin")) {
+        const option = document.createElement("option");
+        // Đặt giá trị cho option bằng tên file
+        option.value = files.Key;
+        // Đặt text hiển thị (bỏ .bin đi, bỏ v đi và thêm "Phiên bản")
+        versionName = files.Key.replace(/\.bin$/i, "");
+        versionName = versionName.replace(/v?/i, "");
+        option.textContent = `Phiên bản ${versionName}`;
+        firmwareSelect.appendChild(option);
+      }
+    });
+  }
+  catch (err) {
+    console.error("Lỗi khi tải danh sách firmware:", err);
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "Không thể tải danh sách firmware";
+    firmwareSelect.appendChild(option);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadFirmwareOptions);
